@@ -1,5 +1,4 @@
 <img src="https://github.com/OntologyCarDamage/OCD/blob/main/images/Logo_OCD.png" style="width: 200px; height: auto;" align="right" />
-
 # Ontology for Car Damage (OCD)
 * **Ontology for Car Damage (OCD)** is a domain-specific ontology designed for modeling car damage information. It provides a formal representation of entities and relationships involved in damage assessment, enabling automated data analysis for decision support in assessment, cost estimation, and repair planning. The ontology is structured using RDF (Resource Description Framework) and OWL (Web Ontology Language) standards to ensure accurate and consistent representation of car-related data.
 
