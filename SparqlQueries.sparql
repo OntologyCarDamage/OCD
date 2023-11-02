@@ -1,0 +1,131 @@
+Competency Questions and Queries
+
+1: What are the different types of damages that can occur to a car?
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ocd: <https://developer.iziflo.com/research/ocd/>
+
+SELECT ?damageType
+WHERE {
+  ?damageType rdf:type ocd:Damage .
+}
+
+2: What are the various car parts that can be affected by damages?
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ocd: <https://developer.iziflo.com/research/ocd/>
+
+SELECT ?carPart
+WHERE {
+  ?carPart rdf:type ocd:CarParts .
+}
+
+3: How severe is each type of damage?
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ocd: <https://developer.iziflo.com/research/ocd/>
+
+SELECT ?damageType ?severity
+WHERE {
+  ?damageType rdf:type ocd:Damage .
+  ?damageType ocd:Severity ?severity .
+}
+
+4: What are the possible relationships between car parts and damages?
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ocd: <https://developer.iziflo.com/research/ocd/>
+
+SELECT ?carPart ?damageType
+WHERE {
+  ?carPart rdf:type ocd:CarParts .
+  ?carPart ocd:hasDamage ?damageType .
+}
+Explanation: This query retrieves instances of ocd:CarParts that are related to specific damage types through the property ocd:hasDamage.
+
+5: How can the extracted information from unstructured reports be linked to specific concepts in the ontology?
+(To link unstructured reports to ontology concepts, we use the immatriculation number for identification.)
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ocd: <https://developer.iziflo.com/research/ocd/>
+
+SELECT ?carBrand ?carModel ?carRegistration 
+?carPartName ?place ?damageType ?severity 
+?repairAction WHERE { ?car rdf:type ocd:Car .
+  ?car ocd:CarBrand ?carBrand .
+  ?car ocd:CarModel ?carModel .
+  ?car ocd:CarRegistration ?carRegistration .
+  FILTER (CONTAINS(?carRegistration, "FR-759-803"))
+  ?car ocd:hasCarPart ?carPart .
+  ?carPart rdf:type ocd:CarParts .
+  ?carPart ocd:PartName ?carPartName .
+  ?carPart ocd:hasDamage ?damage .
+  ?damage rdf:type ocd:Damage .
+  ?damage ocd:DamageType ?damageType .
+  OPTIONAL {?carPart ocd:Place ?place .}
+  OPTIONAL {?damage ocd:RepairAction ?repairAction .}
+  OPTIONAL {?damage ocd:Severity ?severity .}}
+This SPARQL query retrieves information of the report FR-759-803 from the ontology based on the immatriculation number of the car ("FR-759-803"). It selects specific details such as car brand, car model, car registration, car part names, places, damage types, severities, and repair actions associated with the provided immatriculation number, linking the unstructured reports to ontology concepts.
+
+6: How can the ontology be used to enhance the accuracy and relevance of extracted relations between car components and damages?
+In this query:
+
+?car, ?carBrand, ?carModel, ?carPart, ?damage, ?damageType, and ?severity are variables representing individual instances of cars, car brands, car models, car components, damages, damage types, and severity, respectively.
+The query retrieves instances of cars, their brands, models, associated car components, damages, damage types, and severity information from the ontology.
+By executing this query against your RDF triplestore, you can verify that the extracted information aligns with the ontology, ensuring accuracy and relevance in the relationships between car components and damages.
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ocd: <https://developer.iziflo.com/research/ocd/>
+
+SELECT ?car ?carBrand ?carModel ?carPart ?damage ?damageType ?severity
+WHERE {
+    ?car rdf:type ocd:Car .
+    ?car ocd:CarBrand ?carBrand .
+    ?car ocd:CarModel ?carModel .
+    ?car ocd:hasCarPart ?carPart .
+    ?carPart rdf:type ocd:CarParts .
+    ?carPart ocd:hasDamage ?damage .
+    ?damage rdf:type ocd:Damage .
+    ?damage ocd:DamageType ?damageType .
+    ?damage ocd:Severity ?severity .
+}
+
+7: What is the overall structure and hierarchy of car components and damage types within the ontology?
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ocd: <https://developer.iziflo.com/research/ocd/>
+
+SELECT ?class ?subclass
+WHERE {
+  ?subclass rdfs:subClassOf ?class .
+  VALUES ?class { ocd:CarParts ocd:Damage }
+}
+
+8: SPARQL Query for Damage Price Prediction
+This SPARQL query retrieves data relevant for predicting damage repair prices. It includes details about cars, their attributes, parts, and damages. The retrieved information can be used to build a dataset for regression analysis to predict damage repair costs.
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ocd: <https://developer.iziflo.com/research/ocd/>
+
+SELECT ?carBrand ?carModel ?carYear ?carColor ?carPrice ?carRegistration 
+?fuelType ?carMileage ?hasPartName ?carPartMaterial ?isDamaged ?place 
+?partPrice ?damageType ?severity ?repairAction ?repairCost WHERE { 
+    ?car rdf:type ocd:Car .
+    ?car ocd:CarBrand ?carBrand .
+    ?car ocd:CarModel ?carModel .
+    ?car ocd:CarYear ?carYear .
+    ?car ocd:CarColor ?carColor .
+    ?car ocd:CarPrice ?carPrice .
+    ?car ocd:CarRegistration ?carRegistration .
+    ?car ocd:FuelType ?fuelType .
+    ?car ocd:CarMileage ?carMileage .
+    ?car ocd:hasCarPart ?carPart .
+    ?carPart rdf:type ocd:CarParts .
+    ?carPart ocd:PartName ?hasPartName .
+    ?carPart ocd:CarPartMaterial ?carPartMaterial .
+    ?carPart ocd:IsDamaged ?isDamaged .
+    OPTIONAL {?carPart ocd:Place ?place .}
+    OPTIONAL {?carPart ocd:PartPrice ?partPrice .}
+    OPTIONAL {?carPart ocd:hasDamage ?damage .
+              ?damage rdf:type ocd:Damage .
+              ?damage ocd:DamageType ?damageType .
+              ?damage ocd:Severity ?severity .
+              OPTIONAL {?damage ocd:RepairAction ?repairAction .}
+              OPTIONAL {?damage ocd:RepairCost ?repairCost .}
+    }
+}
