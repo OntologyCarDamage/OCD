@@ -1,3 +1,4 @@
+<meta name="google-site-verification" content="nJZMKoZL7h0yRtHN5qPTyTHpSJGI9hzC395vqx9wXNs" />
 <img src="https://github.com/OntologyCarDamage/OCD/blob/main/images/Logo_OCD.png" style="width: 200px; height: auto;" align="right" />
 
 # Ontology for Car Damage (OCD)
